@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Unique Ludo – Dice Game</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background: linear-gradient(145deg, #1a3b2e, #2d5a4a);
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        .game-container {
+            max-width: 500px;
+            width: 100%;
+            background: #e8d5b5;
+            border-radius: 50px;
+            padding: 20px 15px 25px;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.6), inset 0 2px 4px rgba(255,255,255,0.6);
+            border: 3px solid #c4a77d;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #f7e05e;
+            text-shadow: 4px 4px 0 #b8860b, 6px 6px 0 #6b3e1f;
+            margin: 5px 0 15px;
+        }
+        .board {
+            background: #f0e0c0;
+            border-radius: 30px;
+            padding: 15px;
+            box-shadow: inset 0 0 0 4px #b08e5a, 0 10px 15px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .home-areas {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .home {
+            width: 60px;
+            height: 60px;
+            border-radius: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            padding: 6px;
+            background: rgba(255,255,240,0.5);
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .home-red { background: #e33b3b; }
+        .home-green { background: #3ba83b; }
+        .home-yellow { background: #f7d42a; }
+        .home-blue { background: #3a7eb3; }
+        .token {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 3px 0 rgba(0,0,0,0.3);
+        }
+        .red-token { background: radial-gradient(circle at 30% 30%, #ff9999, #cc0000); }
+        .green-token { background: radial-gradient(circle at 30% 30%, #99ff99, #008800); }
+        .yellow-token { background: radial-gradient(circle at 30% 30%, #ffff99, #cc8800); }
+        .blue-token { background: radial-gradient(circle at 30% 30%, #9999ff, #0000aa); }
+        .track {
+            display: grid;
+            grid-template-columns: repeat(13, 1fr);
+            gap: 4px;
+            background: #4a2518;
+            padding: 8px;
+            border-radius: 30px;
+            width: 100%;
+            margin: 10px 0;
+        }
+        .cell {
+            aspect-ratio: 1/1;
+            background: #f5e5c9;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.7rem;
+            color: #6b4f2f;
+            box-shadow: inset 0 1px 3px #aa8b5a;
+        }
+        .occupied-red { background: #e33b3b; }
+        .occupied-green { background: #3ba83b; }
+        .occupied-yellow { background: #f7d42a; }
+        .occupied-blue { background: #3a7eb3; }
+        .controls {
+            margin-top: 15px;
+            width: 100%;
+        }
+        .dice-area {
+            background: #fff2da;
+            border-radius: 60px;
+            padding: 15px;
+            box-shadow: inset 0 2px 8px #b38b5a, 0 6px 0 #7b5a3b;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .dice {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            font-weight: bold;
+            color: #2b1b0e;
+            box-shadow: 0 8px 0 #aaaaaa, 0 10px 15px black;
+            transition: 0.1s;
+            cursor: pointer;
+        }
+        .dice:active {
+            transform: translateY(6px);
+            box-shadow: 0 2px 0 #aaaaaa, 0 5px 10px black;
+        }
+        .roll-btn {
+            background: #f7d95e;
+            border: none;
+            border-radius: 50px;
+            padding: 16px 20px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #3d2b12;
+            box-shadow: 0 8px 0 #b8860b, 0 8px 15px black;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+        }
+        .roll-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 2px 0 #b8860b, 0 5px 12px black;
+        }
+        .powerups {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .power-btn {
+            background: #c8a7d9;
+            border: none;
+            border-radius: 40px;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #2b1b4a;
+            box-shadow: 0 5px 0 #6a4e8a, 0 5px 10px black;
+            cursor: pointer;
+            flex: 1 1 auto;
+            min-width: 120px;
+        }
+        .power-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #6a4e8a, 0 3px 8px black;
+        }
+        .ad-banner {
+            background: #3b2c1b;
+            color: #efd59a;
+            border-radius: 40px;
+            padding: 12px 20px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid #ab8e5a;
+        }
+        .watch-ad {
+            background: gold;
+            border: none;
+            border-radius: 30px;
+            padding: 8px 25px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            box-shadow: 0 4px 0 #b37b2e;
+            cursor: pointer;
+        }
+        .watch-ad:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            color: #2d1e0e;
+            font-weight: bold;
+        }
+        .coins {
+            background: #4f3f28;
+            color: #f7e05e;
+            padding: 6px 20px;
+            border-radius: 40px;
+            font-size: 1.3rem;
+        }
+        .turn-indicator {
+            background: #b08e5a;
+            color: white;
+            padding: 6px 20px;
+            border-radius: 40px;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🎲 UNIQUE LUDO</h1>
+
+        <!-- Current player & coins -->
+        <div class="footer">
+            <div class="coins">🪙 <span id="coinDisplay">100</span></div>
+            <div class="turn-indicator" id="turnDisplay">🔴 Red's turn</div>
+        </div>
+
+        <!-- Board (simplified representation) -->
+        <div class="board">
+            <div class="home-areas">
+                <div class="home home-red" id="homeRed">
+                    <div class="token red-token" id="redToken1"></div>
+                    <div class="token red-token" id="redToken2"></div>
+                </div>
+                <div class="home home-green" id="homeGreen">
+                    <div class="token green-token" id="greenToken1"></div>
+                    <div class="token green-token" id="greenToken2"></div>
+                </div>
+                <div class="home home-yellow" id="homeYellow">
+                    <div class="token yellow-token" id="yellowToken1"></div>
+                    <div class="token yellow-token" id="yellowToken2"></div>
+                </div>
+                <div class="home home-blue" id="homeBlue">
+                    <div class="token blue-token" id="blueToken1"></div>
+                    <div class="token blue-token" id="blueToken2"></div>
+                </div>
+            </div>
+
+            <!-- Main track (13 cells, each can hold a token) -->
+            <div class="track" id="gameTrack">
+                <!-- cells will be generated by JavaScript -->
+            </div>
+
+            <!-- Message area -->
+            <div id="message" style="margin: 10px 0; font-weight: bold; min-height: 24px;">Roll the dice to start!</div>
+        </div>
+
+        <!-- Dice & Roll -->
+        <div class="controls">
+            <div class="dice-area">
+                <div class="dice" id="dice">⚀</div>
+                <div class="roll-btn" id="rollBtn">ROLL</div>
+            </div>
+
+            <!-- Unique power‑ups -->
+            <div class="powerups">
+                <button class="power-btn" id="extraDice">🎲 Extra Dice (20🪙)</button>
+                <button class="power-btn" id="shield">🛡️ Shield (15🪙)</button>
+                <button class="power-btn" id="swap">🔄 Swap (30🪙)</button>
+            </div>
+
+            <!-- Simulated rewarded ad -->
+            <div class="ad-banner">
+                <span>📺 Watch ad to earn 50 coins!</span>
+                <button class="watch-ad" id="watchAdBtn">WATCH</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ---------- Game State ----------
+            let players = ['red', 'green', 'yellow', 'blue'];
+            let currentPlayerIndex = 0; // 0: red
+            let coins = 100;
+
+            // Token positions: each player has 2 tokens. position -1 means in home.
+            let positions = {
+                red:   [-1, -1],
+                green: [-1, -1],
+                yellow:[-1, -1],
+                blue:  [-1, -1]
+            };
+
+            // For simplicity, we only have 13 cells on the track (0-12)
+            const TRACK_SIZE = 13;
+
+            // Power-up flags
+            let extraDiceActive = false;
+            let shieldActive = false;
+
+            // UI elements
+            const diceEl = document.getElementById('dice');
+            const rollBtn = document.getElementById('rollBtn');
+            const coinDisplay = document.getElementById('coinDisplay');
+            const turnDisplay = document.getElementById('turnDisplay');
+            const messageEl = document.getElementById('message');
+            const trackEl = document.getElementById('gameTrack');
+
+            // Initialize track cells
+            for (let i = 0; i < TRACK_SIZE; i++) {
+                let cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.id = `cell-${i}`;
+                trackEl.appendChild(cell);
+            }
+
+            // Helper to update UI
+            function updateUI() {
+                // Update coins
+                coinDisplay.textContent = coins;
+
+                // Update turn
+                const playerNames = {0:'🔴 Red',1:'🟢 Green',2:'🟡 Yellow',3:'🔵 Blue'};
+                turnDisplay.textContent = playerNames[currentPlayerIndex] + "'s turn";
+
+                // Clear all cell classes
+                for (let i = 0; i < TRACK_SIZE; i++) {
+                    let cell = document.getElementById(`cell-${i}`);
+                    cell.className = 'cell';
+                    cell.innerHTML = ''; // remove any tokens
+                }
+
+                // Place tokens on track (simplified: show first token of each player if on track)
+                for (let player of players) {
+                    let color = player;
+                    let tokenClass = color + '-token';
+                    for (let t = 0; t < positions[player].length; t++) {
+                        let pos = positions[player][t];
+                        if (pos >= 0 && pos < TRACK_SIZE) {
+                            let cell = document.getElementById(`cell-${pos}`);
+                            // Add a small token dot
+                            let dot = document.createElement('div');
+                            dot.className = `token ${tokenClass}`;
+                            dot.style.width = '20px';
+                            dot.style.height = '20px';
+                            cell.appendChild(dot);
+                            cell.classList.add(`occupied-${color}`);
+                        }
+                    }
+                }
+
+                // Indicate tokens at home (they remain visible in home divs, no change needed)
+            }
+
+            // Roll dice
+            function rollDice() {
+                return Math.floor(Math.random() * 6) + 1;
+            }
+
+            // Move current player's first token that is in home, or advance if already on track
+            // For simplicity, we just move the first token that is still home onto track (position 0)
+            // If both are on track, advance the first one by dice value.
+            function moveCurrentPlayer(diceValue) {
+                let player = players[currentPlayerIndex];
+                let moved = false;
+
+                // Try to move a token from home first
+                for (let i = 0; i < positions[player].length; i++) {
+                    if (positions[player][i] === -1) {
+                        // Bring token out if dice is 6 (or if extra dice power-up is active)
+                        if (diceValue === 6 || extraDiceActive) {
+                            positions[player][i] = 0; // place at start
+                            messageEl.textContent = `✅ ${player} token out!`;
+                            moved = true;
+                            break;
+                        } else {
+                            messageEl.textContent = `❌ Need a 6 to bring token out.`;
+                            return false;
+                        }
+                    }
+                }
+
+                // If no token moved from home, move the first token on track
+                if (!moved) {
+                    for (let i = 0; i < positions[player].length; i++) {
+                        if (positions[player][i] >= 0) {
+                            let newPos = positions[player][i] + diceValue;
+                            if (newPos < TRACK_SIZE) {
+                                positions[player][i] = newPos;
+                                messageEl.textContent = `🎲 ${player} moved to ${newPos}`;
+                            } else {
+                                messageEl.textContent = `🏁 ${player} reached goal! (simplified)`;
+                                // Remove token from board (set to -2 meaning finished)
+                                positions[player][i] = -2;
+                            }
+                            moved = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!moved) {
+                    messageEl.textContent = `⚠️ No movable token.`;
+                }
+
+                return moved;
+            }
+
+            // End turn and switch player
+            function nextTurn() {
+                currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+                // Reset power-ups that last one turn
+                extraDiceActive = false;
+                shieldActive = false;
+                updateUI();
+            }
+
+            // Handle roll button click
+            rollBtn.addEventListener('click', function() {
+                let diceValue = rollDice();
+                // Display dice face
+                const diceFaces = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+                diceEl.textContent = diceFaces[diceValue - 1];
+
+                // If shield active, prevent negative effect? Not implemented.
+                // Move current player
+                let moved = moveCurrentPlayer(diceValue);
+                if (moved && diceValue !== 6 && !extraDiceActive) {
+                    // If not a 6 and not extra dice, turn ends
+                    nextTurn();
+                } else if (diceValue === 6) {
+                    messageEl.textContent += ' 🎉 Extra turn!';
+                    // stay on same player
+                } else if (extraDiceActive) {
+                    messageEl.textContent += ' 🎲 Extra dice used, turn ends.';
+                    nextTurn();
+                } else {
+                    // No move, turn might still end? For simplicity, end turn if no move.
+                    if (!moved) nextTurn();
+                }
+                updateUI();
+            });
+
+            // Power-ups
+            document.getElementById('extraDice').addEventListener('click', function() {
+                if (coins >= 20) {
+                    coins -= 20;
+                    extraDiceActive = true;
+                    messageEl.textContent = '🎲 Extra dice active! Next roll can bring token out even without 6.';
+                    updateUI();
+                } else {
+                    messageEl.textContent = '❌ Not enough coins!';
+                }
+            });
+
+            document.getElementById('shield').addEventListener('click', function() {
+                if (coins >= 15) {
+                    coins -= 15;
+                    shieldActive = true;
+                    messageEl.textContent = '🛡️ Shield active! (protection not implemented fully)';
+                    updateUI();
+                } else {
+                    messageEl.textContent = '❌ Not enough coins!';
+                }
+            });
+
+            document.getElementById('swap').addEventListener('click', function() {
+                if (coins >= 30) {
+                    coins -= 30;
+                    // Swap current player's first token with opponent's first token (simplified)
+                    let current = players[currentPlayerIndex];
+                    let other = players[(currentPlayerIndex + 1) % players.length];
+                    // Find first token on track for each
+                    let curTokenIdx = -1, otherTokenIdx = -1;
+                    for (let i=0; i<positions[current].length; i++) {
+                        if (positions[current][i] >= 0) { curTokenIdx = i; break; }
+                    }
+                    for (let i=0; i<positions[other].length; i++) {
+                        if (positions[other][i] >= 0) { otherTokenIdx = i; break; }
+                    }
+                    if (curTokenIdx !== -1 && otherTokenIdx !== -1) {
+                        let temp = positions[current][curTokenIdx];
+                        positions[current][curTokenIdx] = positions[other][otherTokenIdx];
+                        positions[other][otherTokenIdx] = temp;
+                        messageEl.textContent = '🔄 Swapped positions!';
+                    } else {
+                        messageEl.textContent = '⚠️ Need one token each on track to swap.';
+                    }
+                    updateUI();
+                } else {
+                    messageEl.textContent = '❌ Not enough coins!';
+                }
+            });
+
+            // Simulated rewarded ad
+            document.getElementById('watchAdBtn').addEventListener('click', function() {
+                // In a real app, you would call the ad SDK here.
+                // For demo, just add coins.
+                coins += 50;
+                messageEl.textContent = '📺 Ad watched! +50 coins.';
+                updateUI();
+            });
+
+            // Initial update
+            updateUI();
+
+            // Make dice clickable as alternative roll
+            diceEl.addEventListener('click', function() {
+                rollBtn.click();
+            });
+        })();
+    </script>
+</body>
+</html>
