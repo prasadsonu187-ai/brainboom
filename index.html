@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>HTML Editor</title>
+ <style>
+  body {
+         font-family: Arial, sans-serif;
+         background-color: #f4f4f4;
+         margin: 0;
+         }
+         h1 {
+         color: #333;
+         }
+         p {
+         color: #666;
+         }
+ </style>
+</head>
+
+<body>
+ <h1>Welcome to Our HTML Editor</h1>
+ <p>This is a sample HTML code.</p>
+ <p>You can edit this code and see the changes in real-time.</p>
+ <p>Enjoy coding!</p>
+</body>
+
+</html><!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BrainBoom Master</title>
+<style>
+body { font-family: Arial; text-align: center; background: #4facfe; color: white; }
+button { padding: 12px; margin: 8px; font-size: 18px; border-radius: 8px; }
+#game { margin-top: 20px; }
+</style>
+</head>
+<body>
+
+<h1>🧠 BrainBoom Master</h1>
+<p>Coins: <span id="coins">0</span></p>
+
+<div id="home">
+  <button onclick="startMath()">Play Math</button><br>
+  <button onclick="watchAd()">🎁 Watch Ad (Get 50 Coins)</button>
+</div>
+
+<div id="game" style="display:none;">
+  <p id="question"></p>
+  <input type="number" id="answer">
+  <br>
+  <button onclick="check()">Submit</button>
+  <p id="message"></p>
+  <button onclick="backHome()">Home</button>
+</div>
+
+<script>
+let level = 1;
+let coins = 0;
+let correctAnswer = 0;
+
+document.getElementById("coins").innerText = coins;
+
+function startMath(){
+  document.getElementById("home").style.display = "none";
+  document.getElementById("game").style.display = "block";
+  nextQuestion();
+}
+
+function nextQuestion(){
+  let a = Math.floor(Math.random()*level)+1;
+  let b = Math.floor(Math.random()*level)+1;
+  correctAnswer = a + b;
+  document.getElementById("question").innerText = a + " + " + b + " = ?";
+  document.getElementById("message").innerText = "";
+}
+
+function check(){
+  let ans = Number(document.getElementById("answer").value);
+  if(ans === correctAnswer){
+    coins += 10;
+    level++;
+    document.getElementById("message").innerText = "Correct! 😊";
+  } else {
+    document.getElementById("message").innerText = "Try Again 😜";
+  }
+  document.getElementById("coins").innerText = coins;
+  nextQuestion();
+}
+
+function watchAd(){
+  coins += 50;
+  alert("You got 50 coins!");
+  document.getElementById("coins").innerText = coins;
+}
+
+function backHome(){
+  document.getElementById("game").style.display = "none";
+  document.getElementById("home").style.display = "block";
+}
+</script>
+</body>
+</html>
